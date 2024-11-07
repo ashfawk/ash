@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seat Reservation</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to external CSS -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url(''); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #a9e9d6; 
+        }
+
+        #payment {
+            color: #e67c1a;
+            margin-bottom: 20px;
+        }
+        .container {
+            max-width: 600px;
+            background: #21e78b;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            text-align: center;
+        }
+        #firstclass, #premium {
+            color: #e57373;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        #seat, #seats {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .seat {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            margin: 10px;
+            background: #009688;
+            color: white;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .seat:hover {
+            background: #00796b;
+        }
+        .reserved {
+            background: #e57373;
+            cursor: not-allowed;
+        }
+        .available {
+            background: #81c784;
+        }
+        .selected {
+            border: 2px solid #ffeb3b;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+        }
+        label {
+            margin: 10px 0 5px;
+            color: #555;
+        }
+        input[type="text"], input[type="email"] {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button, .payment-button {
+            padding: 10px;
+            background-color: #009688;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        button:hover, .payment-button:hover {
+            background-color: #00796b;
+        }
+        .selected {
+            background-color: #ffeb3b; 
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Seat Reservation</h1>
+        <h3 id="firstclass">FIRST CLASS SEATS</h3>
+        <div id="seats">
+            <div class="seat available" data-seat="1">1</div>
+            <div class="seat available" data-seat="2">2</div>
+            <div class="seat available" data-seat="3">3</div>
+            <div class="seat available" data-seat="4">4</div>
+            <div class="seat reserved" data-seat="5">5</div>
+            <div class="seat available" data-seat="6">6</div>
+            <div class="seat available" data-seat="7">7</div>
+            <div class="seat available" data-seat="8">8</div>
+            <div class="seat available" data-seat="9">9</div>
+            <div class="seat available" data-seat="10">10</div>
+        </div>
+        <br>
+        <h3 id="premium">SECOND CLASS SEATS</h3>
+        <br>
+        <div id="seat">
+            <div class="seat available" data-seat="11">11</div>
+            <div class="seat available" data-seat="12">12</div>
+            <div class="seat available" data-seat="13">13</div>
+            <div class="seat available" data-seat="14">14</div>
+            <div class="seat reserved" data-seat="15">15</div>
+            <div class="seat available" data-seat="16">16</div>
+            <div class="seat available" data-seat="17">17</div>
+            <div class="seat available" data-seat="18">18</div>
+            <div class="seat available" data-seat="19">19</div>
+            <div class="seat available" data-seat="20">20</div>
+        </div>
+
+        <form id="reservation-form">
+            <label for="name">Your Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Your Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <input type="hidden" id="selected-seats" name="selected-seats">
+            <button type="submit">Reserve Seats</button>
+        </form>
+
+        <div class="container">
+            <h3 id="payment">Select Payment Method</h3>
+            <a class="payment-button" href="index2.html">Pay Now</a>
+            <p id="confirmation" style="margin-top: 20px;"></p>
+        </div>
+    </div>
+
+    <script>
+        const seats = document.querySelectorAll('.seat');
+        const selectedSeatsInput = document.getElementById('selected-seats');
+        const reservationForm = document.getElementById('reservation-form');
+
+        seats.forEach(seat => {
+            seat.addEventListener('click', () => {
+                if (seat.classList.contains('available')) {
+                    seat.classList.toggle('selected');
+                    updateSelectedSeats();
+                }
+            });
+        });
+
+        function updateSelectedSeats() {
+            const selectedSeats = [...document.querySelectorAll('.seat.selected')]
+                .map(seat => seat.dataset.seat)
+                .join(', ');
+            selectedSeatsInput.value = selectedSeats;
+        }
+
+        reservationForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const seatsString = selectedSeatsInput.value;
+            if (seatsString) {
+                alert(Seats ${seatsString} reserved for ${document.getElementById('name').value});
+                document.querySelectorAll('.seat.selected').forEach(seat => {
+                    seat.classList.remove('available', 'selected');
+                    seat.classList.add('reserved');
+                });
+                reservationForm.reset();
+                selectedSeatsInput.value = '';
+            } else {
+                alert('Please select at least one seat.');
+            }
+        });
+    </script>
+</body>
+</html>
